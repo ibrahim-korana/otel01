@@ -1,0 +1,92 @@
+{
+    "devices":"Ice_ExBox",
+    "functions": [
+        {
+            "name":"lamp",
+            "uname":"door Lamp 220",
+            "id": 1,
+            "loc": 0,     
+            "timer": 0,
+            "global":1,
+            "hardware": {
+                "port": [
+                    {"pin": 10, "pcf":1, "name":"anahtar", "type":"PORT_INPORT"},
+                    {"pin": 1, "pcf":1, "name":"role", "type":"PORT_OUTPORT"}
+                ]
+            }
+        },
+        {
+            "name":"lamp",
+            "uname":"room Lamp 220",
+            "id": 1,
+            "loc": 0,     
+            "timer": 0,
+            "global":0,
+            "hardware": {
+                "port": [
+                    {"pin": 4, "pcf":1, "name":"anahtar", "type":"PORT_INPULS"},
+                    {"pin": 2, "pcf":1, "name":"role", "type":"PORT_OUTPORT"}
+                ]
+            }
+        },
+        {
+            "name":"room",
+            "uname":"room",
+            "id": 1,
+            "loc": 0,     
+            "timer": 120,
+            "global":0,
+            "hardware": {
+                "port": [
+                    {"pin": 6, "pcf":1, "name":"equ", "type":"PORT_INPORT"},
+                    {"pin": 7, "pcf":1, "name":"oda role", "type":"PORT_OUTPORT"}
+                ]
+            }
+        },
+        {
+            "name":"klima",
+            "uname":"Klima 1",
+            "id": 1,
+            "loc": 0,     
+            "timer": 20,
+            "global":0,
+            "hardware": {
+                "port": [
+                    {"pin": 5, "pcf":1, "name":"Sensor", "type":"PORT_INPORT"},
+                    {"pin": 5, "pcf":1, "name":"KLM role", "type":"PORT_OUTPORT"}
+                ]
+            }
+        },
+        {
+            "name":"klima",
+            "uname":"Klima 2",
+            "id": 1,
+            "loc": 0,     
+            "timer": 20,
+            "global":0,
+            "hardware": {
+                "port": [
+                    {"pin": 7, "pcf":1, "name":"Sensor", "type":"PORT_INPORT"},
+                    {"pin": 6, "pcf":1, "name":"KLM role", "type":"PORT_OUTPORT"}
+                ]
+            }
+        },
+        {
+            "name":"pled",
+            "uname":"pled 1",
+            "id": 1,
+            "loc": 0,     
+            "timer": 20,
+            "global":0,
+            "hardware": {
+                "port": [
+                    {"pin": 19, "channel":0, "name":"LED", "type":"PORT_PWM"},
+                    {"pin": 3, "pcf":1, "name":"L1 ANAHTAR", "type":"PORT_INPORT"}
+                ]
+            }
+        }
+        
+        
+
+    ]
+}

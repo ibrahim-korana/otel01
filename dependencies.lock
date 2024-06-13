@@ -1,0 +1,45 @@
+dependencies:
+  ESP32Time:
+    component_hash: null
+    source:
+      path: D:\esp_prj\global\ESP32Time
+      type: local
+    version: 1.0.0
+  TimeTrigger:
+    component_hash: null
+    source:
+      path: D:\esp_prj\global\TimeTrigger
+      type: local
+    version: 1.0.0
+  home_8563:
+    component_hash: null
+    source:
+      path: D:\esp_prj\global\home_8563
+      type: local
+    version: 1.0.0
+  home_i2c:
+    component_hash: null
+    source:
+      path: D:\esp_prj\global\home_i2c
+      type: local
+    version: 1.0.0
+  idf:
+    component_hash: null
+    source:
+      type: idf
+    version: 5.2.0
+  iptool:
+    component_hash: null
+    source:
+      path: D:\esp_prj\global\iptool
+      type: local
+    version: 1.0.0
+  ssd1306:
+    component_hash: null
+    source:
+      path: D:\esp_prj\global\ssd1306
+      type: local
+    version: 1.0.0
+manifest_hash: 1b5635c27e35f6b66b5ff6a8f120237b3cfad6ffa2ab4f01b2be09f8b8c860c7
+target: esp32
+version: 1.0.0
