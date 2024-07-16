@@ -53,8 +53,8 @@ bool Mqtt::init(
     Event = xEventGroupCreate();
     xEventGroupClearBits(Event, MQTT_CONNECTED_BIT | MQTT_FAIL_BIT | MQTT_SEND_BIT);
     
-    char *L0 = (char *)calloc(1,15);
-    sprintf(L0,"%02d/%02d/%s",mConfig.odano._room.binano,mConfig.odano._room.katno,(char*)mConfig.license);
+    char *L0 = (char *)calloc(1,50);
+    sprintf(L0,"%04d/%02d/%02d/%s",mConfig.project_number, mConfig.odano._room.binano,mConfig.odano._room.katno,(char*)mConfig.license);
     set_license((char*)mConfig.license,L0);
     free(L0);
     return true;
@@ -104,8 +104,10 @@ void Mqtt::send_ack(int id)
 void Mqtt::set_license(char* lic, char *pt)
 {
    clientname = (char*) calloc(1,64);
-   strcpy((char *)clientname,(char*)lic);
-   strcat((char *)clientname,"-DEV");
+   char *tmp = (char*) calloc(1,5);
+   memcpy(tmp,pt,4);
+
+   sprintf((char*)clientname,"%s%s-DEV",tmp,(char*)lic);
    mqttcfg.credentials.client_id = clientname;
    
    willtopic = (char*) calloc(1,64);
@@ -113,9 +115,10 @@ void Mqtt::set_license(char* lic, char *pt)
    sendtopic = (char*) calloc(1,64);
    sharetopic = (char*) calloc(1,64);
 
-   strcpy((char*)willtopic,(char*)"/");
-   strcat((char*)willtopic,(char*)pt);
-   strcat((char*)willtopic,"/devWill");
+   sprintf((char*)willtopic,"/%s/devWill",pt);
+   //strcpy((char*)willtopic,(char*)"/");
+   //strcat((char*)willtopic,(char*)pt);
+   //strcat((char*)willtopic,"/devWill");
    mqttcfg.session.last_will.topic = willtopic;
    mqttcfg.session.last_will.qos=1;
    mqttcfg.session.last_will.retain = 1;
@@ -146,18 +149,11 @@ void Mqtt::set_license(char* lic, char *pt)
     mqttcfg.session.last_will.msg_len = strlen(mqttcfg.session.last_will.msg);
     free(rr);
 
-   strcpy((char*)listentopic,(char*)"/");
-   strcat((char*)listentopic,(char*)pt);
-   strcat((char*)listentopic,"/devListener");
-
-   strcpy((char*)sendtopic,(char*)"/");
-   strcat((char*)sendtopic,(char*)pt);
-   strcat((char*)sendtopic,"/devSender");
+   sprintf((char*)listentopic,"/%s/devListener",pt);
+   sprintf((char*)sendtopic,"/%s/devSender",pt);
 
    strcpy((char*)sharetopic,(char*)"/");
    strcat((char*)sharetopic,(char*)"$share/");
-   char *tmp = (char*) calloc(1,5);
-   memcpy(tmp,lic,2);
    strcat((char*)sharetopic,(char*)tmp);
    strcat((char*)sharetopic,"/ice");
    free(tmp); 

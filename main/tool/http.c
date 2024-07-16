@@ -47,8 +47,10 @@ int replace(char *buf, char* tmp)
 	if (strcmp(buf,"BINA")==0) sprintf(tmp,"%d",globalconfig.odano._room.binano);
 	if (strcmp(buf,"KAT")==0) sprintf(tmp,"%d",globalconfig.odano._room.katno);
 	if (strcmp(buf,"ODA")==0) sprintf(tmp,"%d",globalconfig.odano._room.odano);
+    if (strcmp(buf,"PROJE")==0) sprintf(tmp,"%d",globalconfig.project_number);
 	if (strcmp(buf,"CONNECTION")==0) sprintf(tmp,"%d",globalconfig.odano._room.altodano);
 	if (strcmp(buf,"NAME")==0) sprintf(tmp,"%s",(char *)globalconfig.device_name);
+
 	if (strcmp(buf,"WEB")==0) {
 		if (globalconfig.http_start==1) strcpy(tmp,"checked"); else strcpy(tmp," ");
 	                          }
@@ -407,6 +409,10 @@ static esp_err_t save_handler(httpd_req_t *req)
     findparam(buf,"ODA",aaa);
     p=atoi(aaa);
     globalconfig.odano._room.odano = p;
+
+    findparam(buf,"PROJE",aaa);
+    p=atoi(aaa);
+    globalconfig.project_number = p;
 
     findparam(buf,"CONNECTION",aaa);
     p=atoi(aaa);

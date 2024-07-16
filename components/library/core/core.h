@@ -79,6 +79,7 @@ typedef struct {
     uint8_t rawmac[4];
     uint8_t reset_servisi;
     uint8_t aktif_senaryo;
+    uint16_t project_number;
 } home_global_config_t;
 
 typedef enum {

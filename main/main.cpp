@@ -28,6 +28,7 @@ ESP_EVENT_DEFINE_BASE(MQTT_LOCAL_EVENTS);
 #define LED0 (gpio_num_t)0
 #define LED1 (gpio_num_t)12
 #define LED2 (gpio_num_t)14
+#define BTN0 (gpio_num_t)34
 
 #define DEVICE_ID 253
 #define CPU2_ID 254
@@ -90,6 +91,7 @@ void global_default_config(void)
      GlobalConfig.comminication = 2;
      GlobalConfig.http_start = 1;
      GlobalConfig.tcpserver_start = 1;
+     GlobalConfig.project_number = 1;
      disk.file_control(GLOBAL_FILE);
      disk.write_file(GLOBAL_FILE,&GlobalConfig,sizeof(GlobalConfig),0);
 }
@@ -97,14 +99,16 @@ void global_default_config(void)
 void network_default_config(void)
 {
      NetworkConfig.home_default = 1;
-     NetworkConfig.wifi_type = HOME_WIFI_STA;
+     NetworkConfig.wifi_type = HOME_WIFI_AP;
      NetworkConfig.wan_type = WAN_ETHERNET;
      NetworkConfig.ipstat = DYNAMIC_IP;
-     strcpy((char*)NetworkConfig.wifi_ssid, "ice");
-     strcpy((char*)NetworkConfig.wifi_pass, "iceice");
-     strcpy((char*)NetworkConfig.ip,"192.168.250.8");
+     //strcpy((char*)NetworkConfig.wifi_ssid, "Lords Palace");
+     strcpy((char*)NetworkConfig.wifi_pass, "");
+     strcpy((char*)NetworkConfig.ip,"192.168.1.11");
      strcpy((char*)NetworkConfig.netmask,"255.255.0.0");
-     strcpy((char*)NetworkConfig.gateway,"192.168.250.1");
+     strcpy((char*)NetworkConfig.gateway,"192.168.0.1");
+     strcpy((char*)NetworkConfig.dns,"4.4.4.4");
+     strcpy((char*)NetworkConfig.backup_dns,"8.8.8.8");
      NetworkConfig.channel = 1;
 
 /*
@@ -225,11 +229,18 @@ extern "C" void app_main()
  //   esp_log_level_set("MQTT", ESP_LOG_NONE); 
 
     gpio_config_t io_conf = {};
-	io_conf.mode = GPIO_MODE_OUTPUT;
+	io_conf.mode = GPIO_MODE_INPUT_OUTPUT;
 	io_conf.pin_bit_mask = (1ULL<<LED0) | (1ULL<<LED1) | (1ULL<<LED2);
 	io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
 	io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
 	gpio_config(&io_conf);
+
+    gpio_config_t io_conf1 = {};
+	io_conf1.mode = GPIO_MODE_INPUT;
+	io_conf1.pin_bit_mask = (1ULL<<BTN0);
+	io_conf1.pull_down_en = GPIO_PULLDOWN_DISABLE;
+	io_conf1.pull_up_en = GPIO_PULLUP_ENABLE;
+	gpio_config(&io_conf1);
 
     if(esp_event_loop_create_default()!=ESP_OK) {ESP_LOGE(TAG,"esp_event_loop_create_default ERROR "); }
     ESP_ERROR_CHECK(esp_event_handler_instance_register(LED_EVENTS, ESP_EVENT_ANY_ID, led_handler, NULL, NULL));
@@ -341,7 +352,6 @@ extern "C" void app_main()
 			tcpserver.start(5717);
 		}
 
-
 		ESP_LOGI(TAG, "MQTT START");
 		mqtt.init(GlobalConfig);
 		mqtt.start();
@@ -354,7 +364,13 @@ extern "C" void app_main()
 
     sprintf(ss,"%s/%d",oda->get_oda_string(),GlobalConfig.odano.room);
     display_write(3,ss);
-    free(ss);
+    free(ss); 
+    
+    char *pp = (char *)calloc(1,64);
+    rtc.getTimeDate(pp);
+    ESP_LOGI(TAG,"Zaman : %s",pp);
+    free(pp);
+    
 
     	ESP_LOGI(TAG,"         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 	    ESP_LOGI(TAG,"         |         HOTEL ROOM BOX      |");
@@ -369,6 +385,7 @@ extern "C" void app_main()
 	    ESP_LOGI(TAG,"       Connection Oda No : %d", oda->get_connection());
 	    ESP_LOGI(TAG,"                  Oda Id : %d", oda->get_oda_id());
 	    ESP_LOGI(TAG,"                  ODA NO : %s", oda->get_oda_string());
+        ESP_LOGI(TAG,"                Proje NO : %d", GlobalConfig.project_number);
 	    ESP_LOGI(TAG,"          Lokal Iletisim : %s", (GlobalConfig.comminication==1)?"Wifi":"Rs485");
 	    ESP_LOGI(TAG,"                     Wan : %s", (NetworkConfig.wan_type==WAN_ETHERNET)?"Ethernet":"Wifi");
 	    ESP_LOGI(TAG,"        Wan Comminication: %s", (ComStatus)?"OK":"Wan iletisimi YOK");
@@ -396,6 +413,17 @@ extern "C" void app_main()
     ESP_LOGI(TAG,"STARTED..");
     while(true)
     {
+        if (gpio_get_level(BTN0)==0)
+        {
+            printf("BUTON\n");
+            uint64_t startMicros = esp_timer_get_time();
+            uint64_t currentMicros = startMicros;
+            while(gpio_get_level(BTN0)==0)
+            {
+                currentMicros = esp_timer_get_time()-startMicros;
+                
+            }
+        }
         vTaskDelay(10/portTICK_PERIOD_MS);
     }
 

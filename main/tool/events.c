@@ -6,15 +6,28 @@ void led_handler(void* handler_args, esp_event_base_t base, int32_t id, void* ev
 {
     //ESP_LOGW(TAG, "LED %ld %ld", id , base, id);
     led_events_data_t* event = (led_events_data_t*) event_data;
-    if (id==LED_EVENTS_ETH) gpio_set_level(LED2, event->state);
-    if (id==LED_EVENTS_MQTT) gpio_set_level(LED1, event->state);
-    if (id==LED_EVENTS_MQTT && event->state) {
-        display_write(2,"MQTT ERROR");
-    }
+    bool et=false, mq=false;
+    
+    if (id==LED_EVENTS_ETH) {gpio_set_level(LED2, event->state);}
+    if (id==LED_EVENTS_MQTT) {gpio_set_level(LED1, event->state);}
+    vTaskDelay(10/portTICK_PERIOD_MS);
+    mq = gpio_get_level(LED1);
+    et = gpio_get_level(LED2);
+
+    if (!mq && !et) display_write(2,"          ");
+    if (et) display_write(2,"ETH ERROR");
+    if (!et && mq) display_write(2,"MQTT ERROR"); 
+/*
     if (id==LED_EVENTS_ETH && event->state) {
         display_write(2,"ETH ERROR");
+        return;
     }
-
+    if (id==LED_EVENTS_MQTT && event->state) {        
+        display_write(2,"MQTT ERROR");
+        return;
+    }
+*/    
+    
 }
 
 void ip_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
@@ -232,7 +245,6 @@ void command_transfer(cJSON *rcv_json, sender_t snd)
         send_action(rcv_json);
 
     }
-
 
     if (strcmp(command,"intro")==0) {
         sender_type = snd;

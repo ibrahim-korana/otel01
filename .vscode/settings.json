@@ -14,7 +14,7 @@
     ],
     "idf.pythonBinPathWin": "d:\\.espressif\\python_env\\idf5.2_py3.11_env\\Scripts\\python.exe",
     "idf.toolsPathWin": "d:\\.espressif",
-    "idf.portWin": "COM3",
+    "idf.portWin": "COM11",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
         "thread": "c"
